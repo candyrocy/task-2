@@ -1,0 +1,29 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.cluster import KMeans
+from sklearn.preprocessing import StandardScaler
+
+data = {
+    'customerID': [1, 2, 3, 4, 5, 6, 7, 8],
+    'totalSpend': [150, 150, 200, 300, 1200, 600, 600, 1000],
+    'visitFrequency': [5, 10, 10, 15, 30, 30, 10, 10],
+    'recency': [30, 25, 20, 15, 10, 10, 20, 10]
+}
+
+df = pd.DataFrame(data)
+
+features = df[['totalSpend', 'visitFrequency']]
+
+scaler = StandardScaler()
+scaled_features = scaler.fit_transform(features)
+
+kmeans = KMeans(n_clusters=3, random_state=42, n_init=10)
+df['cluster'] = kmeans.fit_predict(scaled_features)
+
+plt.figure(figsize=(7, 5))
+plt.scatter(df['totalSpend'], df['visitFrequency'], c=df['cluster'], cmap='viridis', s=100, edgecolors='k')
+plt.title("Customer Clusters (K-means)")
+plt.xlabel("Total Spend")
+plt.ylabel("Visit Frequency")
+plt.grid(True)
+plt.show()
